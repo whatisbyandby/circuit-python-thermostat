@@ -1,0 +1,6 @@
+adafruit-circuitpython-scd4x
+adafruit-circuitpython-si7021
+adafruit-circuitpython-seesaw
+aiomqtt
+
+pytest-mock
