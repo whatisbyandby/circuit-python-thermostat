@@ -12,11 +12,12 @@ from thermostat import Thermostat
 from utils import get_device_id
 from switch import RelaySwitch
 from dotenv import load_dotenv
+from discovery import send_discovery_message
 
 
 async def main():
     load_dotenv()
-    logging.basicConfig(format='%(asctime)s - %(levelname)s - %(name)s - %(message)s', level=logging.DEBUG)
+    logging.basicConfig(format='%(asctime)s - %(levelname)s - %(name)s - %(message)s', level=logging.INFO)
     
     logger = logging.getLogger("Main")
     state_queue = asyncio.Queue()
@@ -38,6 +39,9 @@ async def main():
     sensor = get_environment_sensor(i2c)
     
     async with aiomqtt.Client(os.getenv("MQTT_HOST")) as client:
+
+        await send_discovery_message(client, thermostat)
+
         async with asyncio.TaskGroup() as tg:
             tg.create_task(sensor_task(thermostat, sensor))
             tg.create_task(subscriber_task(client, thermostat))
