@@ -112,6 +112,7 @@ class Thermostat:
 
 
     def handle_command(self, command):
+        self.logger.info(f"Handling command: {command}")
         if command.command_type == ThermostatCommandType.SET_TARGET_TEMP:
             self._target_temperature = float(command.parameter)
         elif command.command_type == ThermostatCommandType.SET_MODE:

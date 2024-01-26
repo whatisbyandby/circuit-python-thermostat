@@ -7,7 +7,7 @@ async def send_discovery_message(client, thermostat):
     discovery_message = {
         "name": "Thermostat",
 
-        "action_topic": f"home/thermostat/{thermostat.device_id}/action/state",
+        "action_topic": f"home/thermostat/action/state",
 
         # Current Temperature
         "current_temperature_topic": f"home/thermostat/current_temp/state",
@@ -30,7 +30,6 @@ async def send_discovery_message(client, thermostat):
         "fan_mode_command_topic": f"home/thermostat/fan_mode/set",
 
         # Optomistic
-        "optimistic": "false",
         "retain": "true",
         
     }
