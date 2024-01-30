@@ -63,10 +63,11 @@ class ThermostatCommand:
 
 
 class Thermostat:
-    def __init__(self, device_id, heater_switch=None, fan_switch=None, state_queue=None, cooler_switch=None):
+    def __init__(self, device_id, heater_switch=None, fan_switch=None, state_queue=None, local_state_queue=None, cooler_switch=None):
         self.device_id = device_id
         self.logger = logging.getLogger("Thermostat")
         self._state_queue = state_queue
+        self._local_state_queue = local_state_queue
         self._current_temperature = int(os.getenv("DEFAULT_TEMP", 60))
         self._temperature_range = 1
         self._target_temperature = int(os.getenv("DEFAULT_TARGET_TEMP", 60))
@@ -90,6 +91,7 @@ class Thermostat:
         state = self.get_state()
         self.logger.debug(f"Publishing state: {state}")
         self._state_queue.put_nowait(state)
+        self._local_state_queue.put_nowait(state)
 
 
     def handle_new_readings(self, readings):
