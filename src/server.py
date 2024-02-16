@@ -1,6 +1,6 @@
 import threading
 import uvicorn
-from fastapi import FastAPI, WebSocket
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 import json
 from thermostat import ThermostatCommand, ThermostatCommandType
 import dataclasses
@@ -15,6 +15,7 @@ def start_server(thermostat, queue):
         while True:
             try:
                 data = await websocket.receive_text()
+                print(data)
                 json_data = json.loads(data)
                 await queue.put(json_data)
             except WebSocketDisconnect:
@@ -32,6 +33,7 @@ def start_server(thermostat, queue):
             if not command_queue.empty():
                 message = await command_queue.get()
                 thermostat.handle_command(ThermostatCommand(command_type=ThermostatCommandType.SET_TARGET_TEMP, parameter=message.get("target_temperature")))
+                thermostat.handle_command(ThermostatCommand(command_type=ThermostatCommandType.SET_MODE, parameter=message.get("mode")))
             await asyncio.sleep(0.2)
     
     def run_fastapi():

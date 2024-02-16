@@ -5,7 +5,6 @@ import dataclasses
 async def producer_loop(client, state_queue):    
     new_state = await state_queue.get()
     logger = logging.getLogger("State Publisher")
-    logger.info("Publishing new state")
     await client.publish("home/thermostat/target_temp/state", new_state.target_temperature)
     await client.publish("home/thermostat/current_temp/state", new_state.current_temperature)
     await client.publish("home/thermostat/current_humidity/state", new_state.current_humidity)

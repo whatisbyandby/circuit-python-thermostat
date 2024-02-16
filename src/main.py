@@ -40,19 +40,23 @@ async def main():
         local_state_queue=local_state_queue
     )
 
-    i2c = board.I2C()
-    sensor = get_environment_sensor(i2c)
+    try:
 
-    start_server(thermostat, local_state_queue)
+        i2c = board.I2C()
+        sensor = get_environment_sensor(i2c)
 
-    async with aiomqtt.Client(os.getenv("MQTT_HOST")) as client:
+        start_server(thermostat, local_state_queue)
 
-        await send_discovery_message(client, thermostat)
+        async with aiomqtt.Client(os.getenv("MQTT_HOST")) as client:
 
-        async with asyncio.TaskGroup() as tg:
-            tg.create_task(sensor_task(thermostat, sensor))
-            tg.create_task(subscriber_task(client, thermostat))
-            tg.create_task(producer_task(client, state_queue))
+            await send_discovery_message(client, thermostat)
+
+            async with asyncio.TaskGroup() as tg:
+                tg.create_task(sensor_task(thermostat, sensor))
+                tg.create_task(subscriber_task(client, thermostat))
+                tg.create_task(producer_task(client, state_queue))
+    except Exception as e:
+        logger.info(e)
         
 
 if __name__ == "__main__":

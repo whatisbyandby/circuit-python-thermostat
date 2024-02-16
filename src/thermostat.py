@@ -131,7 +131,18 @@ class Thermostat:
 
 
     def update_state(self, event_type):
-        if event_type == ThermostatEventType.OVER_TEMPERATURE:
+
+        if self._mode == ThermostatMode.OFF:
+            self.heater_switch.off()
+            self.fan_switch.off()
+            self._action = ThermostatAction.OFF
+
+        elif self._mode == ThermostatMode.FAN_ONLY:
+            self.heater_switch.off()
+            self.fan_switch.on()
+            self._action = ThermostatAction.FAN
+            
+        elif event_type == ThermostatEventType.OVER_TEMPERATURE:
             self.heater_switch.off()
             self.fan_switch.off()
             self._action = ThermostatAction.IDLE

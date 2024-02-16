@@ -1,19 +1,16 @@
-import { useState } from 'react'
-
 import './App.css'
 
 import '@mantine/core/styles.css';
 
 import { Container, MantineProvider } from '@mantine/core';
-import ThermostatSlider from './ThermostatSlider'
-import WebsocketComponent from './WebsocketComponent';
+import Thermostat from './Thermostat';
 
 function App() {
 
   return (
     <MantineProvider defaultColorScheme="dark">
       <Container>
-        <WebsocketComponent />
+        <Thermostat min={45} max={95} />
       </Container>
     </MantineProvider>
   )

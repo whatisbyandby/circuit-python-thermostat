@@ -4,3 +4,5 @@ adafruit-circuitpython-seesaw
 aiomqtt
 
 pytest-mock
+uvicorn
+fastapi

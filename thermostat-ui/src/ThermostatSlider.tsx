@@ -1,5 +1,6 @@
 import { Slider } from '@mantine/core';
 import { useEffect, useState } from 'react';
+import { getModeColor } from './Thermostat';
 
 
 export interface ThermostatSliderProps {
@@ -7,6 +8,7 @@ export interface ThermostatSliderProps {
     updateTargetTemperature: (value: number) => void;
     min: number;
     max: number;
+    mode: string;
 }
 
 
@@ -28,19 +30,23 @@ export default function ThermostatSlider(props: ThermostatSliderProps) {
         min,
         max
     } = props;
+    console.log(targetTemperature)
 
     const [targetTemperatureValue, setTargetTemperature] = useState(targetTemperature);
-    const marks = generateMarks(min, max);
 
     useEffect(() => {
         setTargetTemperature(targetTemperature);
     }, [targetTemperature]);
+
+    const marks = generateMarks(min, max);
 
     return (
         <Slider
             min={min}
             max={max}
             marks={marks}
+            disabled={props.mode === "off"}
+            color={getModeColor(props.mode)}
             value={targetTemperatureValue}
             onChange={setTargetTemperature}
             onChangeEnd={updateTargetTemperature}

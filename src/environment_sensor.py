@@ -15,6 +15,10 @@ class Reading:
 def get_environment_sensor(i2c):
     logger = logging.getLogger("EnvironmentSensor")
     logger.debug("Scanning I2C bus")
+
+    return TestEnvironmentSensor(i2c)
+
+
     while not i2c.try_lock():
         logger.debug("I2C bus locked, waiting")
         pass
@@ -30,9 +34,10 @@ def get_environment_sensor(i2c):
                 logger.debug("Found SCD4X")
                 i2c.unlock()
                 return SCD40EnvironmentSensor(i2c)
+        raise Exception("Unable to find an environment sensor")
             
     except Exception as e:
-        logger.error("Error scanning I2C bus: %s")
+        logger.error(f"Error scanning I2C bus: {e}")
     finally:
         logger.debug("Unlocking I2C bus in finally block")
         i2c.unlock()
@@ -48,6 +53,23 @@ class EnvironmentSensor(Protocol):
 
     def start_readings(self):
         '''Starts the sensor taking readings'''
+
+
+class TestEnvironmentSensor(EnvironmentSensor):
+    def __init__(self, i2c):
+        self.logger = logging.getLogger("TEST_ENVIRONMENT_SENSOR")
+        self.logger.debug("Initializing SCD4X")
+
+    def start_readings(self):
+        pass
+    
+    def get_new_readings(self):
+        return [
+                Reading("carbon_dioxide", 100, "ppm"),
+                Reading("temperature", 70, "F"),
+                Reading("humidity", 30, "%"),
+            ]
+
 
 class SCD40EnvironmentSensor(EnvironmentSensor):
     
